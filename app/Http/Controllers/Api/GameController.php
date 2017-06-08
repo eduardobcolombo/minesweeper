@@ -75,6 +75,10 @@ class GameController extends Controller
 
     }
 
+
+    /**
+     *
+     */
     private function makeRevealed(){
         $count = $this->rows * $this->cols;
         $arr = [];
