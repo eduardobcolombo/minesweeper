@@ -15,7 +15,7 @@ class GameTest extends TestCase
     use DatabaseTransactions;
 
     private $client = null;
-
+    private $game_id = null;
     public function __construct() {
         // create our http client (Guzzle)
         $this->client = new Client([
@@ -57,7 +57,8 @@ class GameTest extends TestCase
         $this->assertEquals($response->getHeaders()['Content-Type'][0],'application/json');
         $data = json_decode($response->getBody(true), true);
         // update game_id
-        $dataExpected['game_id'] = $data['game_id'];
+        $this->game_id = $data['game_id'];
+        $dataExpected['game_id'] = $this->game_id;
         // check if data is equal at expected
         $this->assertEquals($dataExpected, $data);
 
@@ -65,13 +66,13 @@ class GameTest extends TestCase
 
     public function testToRevealACell(){
         $data = [
-            'game_id' => 38,
+            'game_id' => $this->game_id,
             'row' => 1,
             'col' => 1
         ];
         $dataExpected = [
             'status' => 'playing',
-            'revealed'=> "H,2,3,H,H,H,H,8,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H"
+            'revealed'=> "H,H,H,H,H,H,H,H,H"
         ];
         // send request
         $response = $this->client->request('POST', 'http://localhost:8000/api/v1/game/reveal', [

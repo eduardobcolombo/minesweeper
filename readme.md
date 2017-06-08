@@ -16,6 +16,48 @@ To run this application follow the lines below.
  - cp .env.example to .env
    - input in this file your own configurations, like database...
 
+# API
+ 
+ This API works with two endpoints:
+ - api/v1/game 
+   - params: username, rows, cols and bombs
+   - this endpoing return a JSON messagem with the structure like this:
+   
+```JSON
+{
+ "username":"eduardo",
+ "game_id":54,
+ "status":"playing",
+ "rows":"5",
+ "cols":"5",
+ "bombs":"5",
+ "revealed":"H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H"
+}
+```
+ - api/v1/game/reveal
+   - params: game_id, row, col
+   - this endpoing return a JSON messagem with the structure like this:
+   
+with row = 0 and col = 1. is a bomb
+```JSON
+{
+ "status":"Game Over",
+ "revealed":"H,B,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H"
+}
+```
+with row = 0 and col = 2. is a number 1
+
+```JSON
+{
+ "status":"playing",
+ "revealed":"H,H,1,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H"
+}
+```
+
+
+
+
+
 
 ## Security Vulnerabilities
 
