@@ -19,10 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('index', function () {
-        return response('show test game', 200)
-            ->header('Content-Type', 'json/application');
+        return response('show test game', 200);
     });
 
+// TODO: authentication https://laravel.com/docs/5.4/passport
+
     Route::post('game', 'Api\GameController@newGame')->name('newGame');
+    Route::post('game/reveal', 'Api\GameController@revealCell')->name('revealCell');
 
 });

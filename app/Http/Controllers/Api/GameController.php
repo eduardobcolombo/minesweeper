@@ -19,6 +19,7 @@ class GameController extends Controller
     private $rows;
     private $cols;
     private $bombs;
+    private $cells;
     private $revealed;
 
     /**
@@ -27,7 +28,7 @@ class GameController extends Controller
      */
     public function __construct(GameRepository $repository){
 
-        $this->repo = $repository;
+        $this->repository = $repository;
     }
 
 
@@ -60,7 +61,7 @@ class GameController extends Controller
         $data['revealed'] = $this->revealed;
         $data['cells'] = $this->createCells();
 
-        $game = $this->repo->create($data);
+        $game = $this->repository->create($data);
 
         return response()->json([
             'username' => $game->username,
@@ -70,8 +71,7 @@ class GameController extends Controller
             'cols' => $game->cols,
             'bombs' => $game->bombs,
             'revealed'=> $game->revealed
-        ], 201)
-            ->header('Content-Type', 'application/json');
+        ], 201);
 
     }
 
@@ -107,5 +107,63 @@ class GameController extends Controller
         }
 
         return implode(',',$arr);
+    }
+
+    public function revealCell(Request $request) {
+        // validate if all fields are filled
+        $validator = \Validator::make($request->all(), [
+            'game_id' => 'required|integer',
+            'row' => 'required|integer',
+            'col' => 'required|integer',
+            'flag' => 'required|string'
+        ]);
+        // if has fails return with errors
+        if ($validator->fails()) {
+            $response['errors'] = $validator->messages();
+            return $response;
+        }
+
+        $data = $request->all();
+        $game_id = $data['game_id'];
+        $row = $data['row'];
+        $col = $data['col'];
+        $flag = $data['flag'];
+
+        $cell = $this->repository->find($game_id);
+        if ($cell['status'] == 'Game Over') {
+            return response()->json([
+                'status' => 'Game Over',
+                'revealed' => $this->revealed
+            ], 200);
+        }
+
+        if ($cell['status'] == 'playing') {
+            $this->revealed = $cell['revealed'];
+            $this->cells = $cell['cells'];
+
+            if ($this->isBomb($row, $col)) {
+                $this->repository->update(['status' => 'Game Over'], $game_id);
+                return response()->json([
+                    'status' => 'Game Over',
+                    'revealed' => $this->revealed
+                ], 200);
+            }
+
+            return response()->json([
+                't' => serialize($cell)
+            ], 200);
+        }
+
+//        $game = $this->repository->create($data);
+
+        return response()->json([
+            'username' => 'revelar'
+        ], 201);
+    }
+
+    private function isBomb(int $c, int $r){
+
+        return true;
+
     }
 }
