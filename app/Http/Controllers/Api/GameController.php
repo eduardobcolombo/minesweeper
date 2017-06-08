@@ -9,6 +9,8 @@ class GameController extends Controller
 {
 
     private $UNREVEALED = 'H';
+    private $EMPTY = 'E';
+    private $BOMB = 'B';
     /**
      * @var GameRepository
      */
@@ -16,10 +18,8 @@ class GameController extends Controller
 
     private $rows;
     private $cols;
+    private $bombs;
     private $revealed;
-
-
-
 
     /**
      * GameController constructor.
@@ -54,9 +54,11 @@ class GameController extends Controller
         $data = $request->all();
         $this->rows = $data['rows'];
         $this->cols = $data['cols'];
+        $this->bombs = $data['bombs'];
         $this->makeRevealed();
         $data['status'] = 'playing';
         $data['revealed'] = $this->revealed;
+        $data['cells'] = $this->createCells();
 
         $game = $this->repo->create($data);
 
@@ -83,6 +85,23 @@ class GameController extends Controller
     }
 
     private function createCells() {
+        $count = $this->rows * $this->cols;
+        $arr = [];
+//        $arr = array_fill(0, $this->rows, array_fill(0, $this->cols, $this->EMPTY);
+        for ($i =0; $i<$this->rows;$i++){
+            for ($j =0; $j<$this->cols;$j++) {
+                array_push($arr, $this->EMPTY);
+            }
+        }
+        for ($i =0; $i<$this->bombs;$i++) {
+            $arr[rand(0,$count)] = $this->BOMB;
+        }
+        for ($i =0; $i<$count;$i++) {
+            if ($arr[$i] != $this->BOMB) {
+                $arr[$i] = rand(1,3);
+            }
+        }
 
+        return implode(',',$arr);
     }
 }
