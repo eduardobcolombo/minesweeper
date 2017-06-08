@@ -65,14 +65,13 @@ class GameTest extends TestCase
 
     public function testToRevealACell(){
         $data = [
-            'game_id' => 20,
+            'game_id' => 38,
             'row' => 1,
-            'col' => 1,
-            'flag'=> 'reveal'
+            'col' => 1
         ];
         $dataExpected = [
             'status' => 'playing',
-            'revealed'=> 'H,H,H,H,1,H,H,H,H'
+            'revealed'=> "H,2,3,H,H,H,H,8,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H,H"
         ];
         // send request
         $response = $this->client->request('POST', 'http://localhost:8000/api/v1/game/reveal', [
@@ -82,7 +81,7 @@ class GameTest extends TestCase
         $this->assertEquals($response->getHeaders()['Content-Type'][0],'application/json');
         $data = json_decode($response->getBody(true), true);
         // update game_id
-        $dataExpected['game_id'] = $data['game_id'];
+//        $dataExpected['game_id'] = $data['game_id'];
         // check if data is equal at expected
         $this->assertEquals($dataExpected, $data);
     }
