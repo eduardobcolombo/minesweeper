@@ -10,6 +10,16 @@ class Game extends Model implements Transformable
 {
     use TransformableTrait;
 
-    protected $fillable = [];
+    protected $fillable = [
+        'username',
+        'rows',
+        'cols',
+        'bombs',
+        'cells',
+        'revealed',
+        'status',
+        'score',
+        'time'
+    ];
 
 }

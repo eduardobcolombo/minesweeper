@@ -19,11 +19,11 @@ class CreateGamesTable extends Migration
             $table->integer('rows');
             $table->integer('cols');
             $table->integer('bombs');
-            $table->text('cells');
-            $table->text('revealed');
-            $table->string('status');
-            $table->string('score');
-            $table->string('time');
+            $table->text('cells')->nullable();
+            $table->text('revealed')->nullable();
+            $table->string('status')->nullable();
+            $table->string('score')->default(0);
+            $table->string('time')->default(0);
 
             $table->timestamps();
 		});

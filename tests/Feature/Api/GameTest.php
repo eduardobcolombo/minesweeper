@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -10,6 +10,10 @@ use GuzzleHttp\Client;
 
 class GameTest extends TestCase
 {
+
+    /** Trait to solve database */
+    use DatabaseTransactions;
+
     private $client = null;
 
     public function __construct() {
@@ -46,7 +50,10 @@ class GameTest extends TestCase
             'revealed'=> 'H,H,H,H,H,H,H,H,H'
         ];
         // send request
-        $response = $this->client->post('/api/v1/game', null, json_encode($data));
+//        $response = $this->client->post('/api/v1/game', ['data'=>$data],json_encode($data));
+        $response = $this->client->request('POST', 'http://localhost:8000/api/v1/game', [
+            'json' => $data
+        ]);
         // check if header is json
         $this->assertEquals($response->getHeaders()['Content-Type'][0],'json/application');
         $data = json_decode($response->getBody(true), true);
