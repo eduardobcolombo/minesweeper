@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Repositories\GameRepository;
@@ -9,10 +8,17 @@ use App\Http\Controllers\Controller;
 class GameController extends Controller
 {
 
+    private $UNREVEALED = 'H';
     /**
      * @var GameRepository
      */
     private $repository;
+
+    private $rows;
+    private $cols;
+    private $revealed;
+
+
 
 
     /**
@@ -26,6 +32,7 @@ class GameController extends Controller
 
 
     /**
+     * Create a new game in database and return the data
      * @param Request $request
      * @return $this
      */
@@ -45,8 +52,11 @@ class GameController extends Controller
         }
 
         $data = $request->all();
+        $this->rows = $data['rows'];
+        $this->cols = $data['cols'];
+        $this->makeRevealed();
         $data['status'] = 'playing';
-        $data['revealed'] = 'H,H,H,H,H,H,H,H,H';
+        $data['revealed'] = $this->revealed;
 
         $game = $this->repo->create($data);
 
@@ -59,7 +69,20 @@ class GameController extends Controller
             'bombs' => $game->bombs,
             'revealed'=> $game->revealed
         ], 201)
-            ->header('Content-Type', 'json/application');
+            ->header('Content-Type', 'application/json');
+
+    }
+
+    private function makeRevealed(){
+        $count = $this->rows * $this->cols;
+        $arr = [];
+        for ($i =0; $i<$count;$i++){
+            array_push($arr,$this->UNREVEALED);
+        }
+        $this->revealed = implode(',',$arr);
+    }
+
+    private function createCells() {
 
     }
 }

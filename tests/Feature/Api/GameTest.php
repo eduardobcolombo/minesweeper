@@ -55,7 +55,7 @@ class GameTest extends TestCase
             'json' => $data
         ]);
         // check if header is json
-        $this->assertEquals($response->getHeaders()['Content-Type'][0],'json/application');
+        $this->assertEquals($response->getHeaders()['Content-Type'][0],'application/json');
         $data = json_decode($response->getBody(true), true);
         // update game_id
         $dataExpected['game_id'] = $data['game_id'];
